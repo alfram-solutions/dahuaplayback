@@ -1,7 +1,7 @@
 #ifndef DAHUASTATUS_HPP
 #define DAHUASTATUS_HPP
 
-#include <stdio.h>
+#include <iostream>
 
 #include <dhnetsdk.h>
 

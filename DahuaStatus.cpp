@@ -8,7 +8,7 @@ int sdk_init(DWORD* sdk_status)
     g_bNetSDKInitFlag = CLIENT_Init(DisConnectFunc, 0);
     if (FALSE == g_bNetSDKInitFlag)
     {
-        printf("Init client SDK fail\n");
+        std::cout << ("Init client SDK fail") << std::endl;
         return -1;
     }
     else
@@ -18,7 +18,7 @@ int sdk_init(DWORD* sdk_status)
 
     DWORD dwNetSdkVersion = CLIENT_GetSDKVersion();
     *sdk_status = CLIENT_GetSDKVersion();
-    printf("NetSDK version is {%d}", dwNetSdkVersion);
+    std::cout << "NetSDK version is " << dwNetSdkVersion << std::endl;
 
     return 0;
 }
