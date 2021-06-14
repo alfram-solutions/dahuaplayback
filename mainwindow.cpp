@@ -6,6 +6,8 @@
 
 #include "DahuaStatus.hpp"
 
+
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
@@ -20,6 +22,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->infoLabel->setText(QString::number(my_sdk_status));
 
 
+
 }
 
 MainWindow::~MainWindow()
@@ -27,4 +30,6 @@ MainWindow::~MainWindow()
 
     delete ui;
 }
+
+
 

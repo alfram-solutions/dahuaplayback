@@ -11,11 +11,13 @@ CONFIG  += c++17
 
 SOURCES += \
     DahuaStatus.cpp \
+    dahuavideoplayer.cpp \
     main.cpp \
     mainwindow.cpp
 
 HEADERS += \
     DahuaStatus.hpp \
+    dahuavideoplayer.hpp \
     mainwindow.h
 
 FORMS += \
