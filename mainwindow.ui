@@ -1,5 +1,7 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
+ <author/>
+ <comment/>
+ <exportmacro/>
  <class>MainWindow</class>
  <widget class="QMainWindow" name="MainWindow">
   <property name="geometry">
@@ -13,59 +15,10 @@
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
-  <widget class="QWidget" name="centralwidget">
-   <widget class="QWidget" name="horizontalLayoutWidget">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>10</y>
-      <width>201</width>
-      <height>80</height>
-     </rect>
-    </property>
-    <layout class="QHBoxLayout" name="horizontalLayout">
-     <item>
-      <widget class="QLabel" name="label">
-       <property name="text">
-        <string>Sdk Version</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QLabel" name="infoLabel">
-       <property name="text">
-        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Status&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </widget>
-   <widget class="QLabel" name="videoLabel">
-    <property name="geometry">
-     <rect>
-      <x>20</x>
-      <y>140</y>
-      <width>181</width>
-      <height>71</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Video</string>
-    </property>
-   </widget>
-  </widget>
-  <widget class="QMenuBar" name="menubar">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>0</y>
-     <width>800</width>
-     <height>22</height>
-    </rect>
-   </property>
-  </widget>
+  <widget class="QMenuBar" name="menubar"/>
+  <widget class="QWidget" name="centralwidget"/>
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
- <resources/>
+ <pixmapfunction/>
  <connections/>
 </ui>
