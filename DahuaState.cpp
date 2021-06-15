@@ -1,38 +1,41 @@
-#include "DahuaStatus.hpp"
+#include "DahuaState.hpp"
 
-#include <cstring>
+#include <string.h>
 #include <unistd.h>
+#include <iostream>
 
-
-
-//static BOOL g_bNetSDKInitFlag = FALSE;
-
-//static LLONG g_lLoginHandle = 0L;
-//static LLONG g_lRealHandle = 0;
-//static char g_szDevIp[32] = "pollok.dyndns.tv";
-//static WORD g_nPort = 37777;
-//static char g_szUserName[64] = "admin";
-//static char g_szPasswd[64] = "admin";
-
-//static BYTE *pVideoBuff;
-
-
-int init_test(DWORD* sdk_status)
+DahuaState::DahuaState()
 {
-    // SDK Init
+    std::cout << "DahuaState() called" << std::endl;
+    g_bNetSDKInitFlag = FALSE;
+    g_lLoginHandle = 0l;
+    g_lRealHandle = 0;
+    strcpy(g_szDevIp, "pollok.dyndns.tv");
+    g_nPort = 37777;
+    strcpy(g_szUserName, "admin");
+    strcpy(g_szPasswd, "admin");
+
+
+}
+
+
+int DahuaState::init_test()
+{
+    // sdk init
     g_bNetSDKInitFlag = CLIENT_Init(DisConnectFunc, 0);
     if (FALSE == g_bNetSDKInitFlag)
     {
         std::cout << ("Init client SDK fail") << std::endl;
         return -1;
     }
-    else
-    {
-        printf("Init client SDK done\n");
-    }
 
+
+        std::cout << "Init client SDK done" << std::endl;
+
+
+    // get,set and print sdk version
     DWORD dwNetSdkVersion = CLIENT_GetSDKVersion();
-    *sdk_status = CLIENT_GetSDKVersion();
+    sdk_status = CLIENT_GetSDKVersion();
     std::cout << "NetSDK version is " << dwNetSdkVersion << std::endl;
 
     // Set reconnection callback
@@ -51,41 +54,41 @@ int init_test(DWORD* sdk_status)
     stuNetParm.nConnectTime = 3000; // The timeout of connection when login
     CLIENT_SetNetworkParam(&stuNetParm);
 
-
     // LOGIN setup
-    NET_DEVICEINFO_Ex stDevInfo = {0};
-    int nError = 0;
+        NET_DEVICEINFO_Ex stDevInfo = {0};
+        int nError = 0;
 
-    while (0 == g_lLoginHandle)
-    {
-        // Login to device
-        g_lLoginHandle = CLIENT_LoginEx2(g_szDevIp, g_nPort, g_szUserName,
-                                         g_szPasswd, EM_LOGIN_SPEC_CAP_TCP, NULL, &stDevInfo, &nError);
-
-        if (0 == g_lLoginHandle)
+        while (0 == g_lLoginHandle)
         {
-            std::cout << "CLIENT_LoginEx " << g_szDevIp << g_nPort << "Failed!" << "Last Error: " << CLIENT_GetLastError() << std::endl;
+            // Login to device
+            g_lLoginHandle = CLIENT_LoginEx2(g_szDevIp, g_nPort, g_szUserName,
+                                             g_szPasswd, EM_LOGIN_SPEC_CAP_TCP, NULL, &stDevInfo, &nError);
+
+            if (0 == g_lLoginHandle)
+            {
+                std::cout << "CLIENT_LoginEx " << g_szDevIp << g_nPort << "Failed!" << "Last Error: " << CLIENT_GetLastError() << std::endl;
+
+            }
+            else
+            {
+                std::cout << "CLIENT_LoginEx " << g_szDevIp << g_nPort << "Success" << std::endl;
+                // for first login wait for some data to be initialised first
+                sleep(10);
+                std::cout << "login ready..." << std::endl;
+            }
+
 
         }
-        else
-        {
-            std::cout << "CLIENT_LoginEx " << g_szDevIp << g_nPort << "Success" << std::endl;
-            // for first login wait for some data to be initialised first
-            sleep(10);
-            std::cout << "ready..." << std::endl;
-        }
-
-
-    }
-
-
 
     return 0;
+
+
+
 }
 
-
-void run_test()
+void DahuaState::run_test()
 {
+    // guard statements
     if (FALSE == g_bNetSDKInitFlag)
     {
         return;
@@ -96,11 +99,8 @@ void run_test()
         return;
     }
 
-    // realize real-time monitoring
-
-
-
-
+    // real time monitoring with 3rd party decoding on linux
+    // sdk version example is only given for windows
     // start real-time monitoring
     int nChannelID = 0; // preview channel
     DH_RealPlayType emRealPlayType = DH_RType_Realplay;
@@ -121,10 +121,10 @@ void run_test()
         }
     }
     std::cout << "Running test..." << std::endl;
-    sleep(10);
+
 }
 
-void end_test()
+void DahuaState::end_test()
 {
     std::cout << "Running end test..." << std::endl;
 
@@ -199,9 +199,9 @@ void CALLBACK RealDataCallBackEx(LLONG lRealHandle, DWORD dwDataType, BYTE *pBuf
         {
         case 0:
             // original A/V hybrid data
-            //std::cout << "Receive real data, param: lRealHandle " << lRealHandle << " dwDataType " << dwDataType << " pBuffer " << pBuffer << " dwBufSize " << dwBufSize << " param " << param << " dwUser " << dwUser << std::endl;
-            pVideoBuff = pBuffer;
-            pDwBuffSize = &dwBufSize;
+            std::cout << "Receive real data, param: lRealHandle " << lRealHandle << " dwDataType " << dwDataType << " pBuffer " << pBuffer << " dwBufSize " << dwBufSize << " param " << param << " dwUser " << dwUser << std::endl;
+
+
         }
     }
 }

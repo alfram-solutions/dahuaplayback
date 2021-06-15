@@ -3,13 +3,16 @@
 
 #include <QMainWindow>
 
+#include "DahuaState.hpp"
+
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
 
 class MainWindow : public QMainWindow
 {
-    Q_OBJECT
+    Q_OBJECT;
+    DahuaState ds;
 
 public:
     MainWindow(QWidget *parent = nullptr);

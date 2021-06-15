@@ -4,8 +4,6 @@
 #include <iostream>
 #include<string>
 
-#include "DahuaStatus.hpp"
-
 
 
 MainWindow::MainWindow(QWidget *parent)
@@ -14,12 +12,10 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
-    DWORD my_sdk_status = 0;
-    DWORD* p_my_sdk_status = &my_sdk_status;
-    init_test(p_my_sdk_status);
-    run_test();
-    end_test();
-    ui->infoLabel->setText(QString::number(my_sdk_status));
+    ds.init_test();
+    ui->infoLabel->setText(QString::number(ds.sdk_status));
+    ds.run_test();
+    ds.end_test();
 
 
 

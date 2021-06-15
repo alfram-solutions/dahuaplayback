@@ -10,14 +10,12 @@ CONFIG  += c++17
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    DahuaStatus.cpp \
-    dahuavideoplayer.cpp \
+    DahuaState.cpp \
     main.cpp \
     mainwindow.cpp
 
 HEADERS += \
-    DahuaStatus.hpp \
-    dahuavideoplayer.hpp \
+    DahuaState.hpp \
     mainwindow.h
 
 FORMS += \
