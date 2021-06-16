@@ -97,3 +97,5 @@ DISTFILES += \
     libraries/dahua/libavnetsdk.so \
     libraries/dahua/libdhconfigsdk.so \
     libraries/dahua/libdhnetsdk.so
+
+unix:!macx: LIBS += -lvlc

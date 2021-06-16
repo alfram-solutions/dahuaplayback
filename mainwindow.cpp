@@ -371,6 +371,11 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    // load the vlc engine
+    inst = libvlc_new(0, NULL);
+    mp = nullptr;
+    m = nullptr;
+
     standardItemModel = createListModel();
     ui->listView1->setModel(standardItemModel);
 

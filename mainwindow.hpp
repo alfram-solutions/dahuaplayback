@@ -16,6 +16,8 @@
 #include "UserDefine.h"
 #include <./utility/Profile.h>
 
+#include <vlc/vlc.h>
+
 
 namespace Ui {
 class MainWindow;
@@ -34,6 +36,11 @@ public:
     void Logindev(int nThreadNum);
     QStandardItemModel* createListModel();
     void addRowData(QAbstractItemModel* model, QStringList rowDataList);
+
+public:
+    libvlc_instance_t* inst;
+    libvlc_media_player_t* mp;
+    libvlc_media_t* m;
 
 protected:
     bool InitData();
