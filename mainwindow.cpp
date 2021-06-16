@@ -4,6 +4,8 @@
 #include <QFileDialog>
 
 #include <iostream>
+#include <ostream>
+
 using namespace std;
 
 #ifndef NEW
@@ -114,6 +116,9 @@ void CALLBACK RealDataCallBackEx(LLONG lRealHandle, DWORD dwDataType, BYTE *pBuf
     }
 
     pChannelInfo->dwStatistic = dwBufSize;
+
+//    FILE* outfile = fopen("data.avi", "wb");
+//    fwrite(pBuffer, 1, dwBufSize, outfile);
 }
 
 void CALLBACK DisConnectFunc(LLONG lLoginID, char *pchDVRIP, LONG nDVRPort, LDWORD dwUser)
@@ -210,35 +215,48 @@ void * RoutineLoginThread(LPVOID lpPara)
 
         if (pDeviceInfo->nBelongThread == nThreadID)
         {
-            NET_IN_LOGIN_WITH_HIGHLEVEL_SECURITY stInparam;
-            memset(&stInparam, 0, sizeof(stInparam));
-            stInparam.dwSize = sizeof(stInparam);
-            strncpy(stInparam.szIP, pDeviceInfo->szDevIp, sizeof(stInparam.szIP) - 1);
-            strncpy(stInparam.szPassword, pDeviceInfo->szPassWord, sizeof(stInparam.szPassword) - 1);
-            strncpy(stInparam.szUserName, pDeviceInfo->szUserName, sizeof(stInparam.szUserName) - 1);
-            stInparam.nPort = pDeviceInfo->nPort;
-            stInparam.emSpecCap = EM_LOGIN_SPEC_CAP_TCP;
+//            NET_IN_LOGIN_WITH_HIGHLEVEL_SECURITY stInparam;
+//            memset(&stInparam, 0, sizeof(stInparam));
+//            stInparam.dwSize = sizeof(stInparam);
+//            strncpy(stInparam.szIP, pDeviceInfo->szDevIp, sizeof(stInparam.szIP) - 1);
+//            strncpy(stInparam.szPassword, pDeviceInfo->szPassWord, sizeof(stInparam.szPassword) - 1);
+//            strncpy(stInparam.szUserName, pDeviceInfo->szUserName, sizeof(stInparam.szUserName) - 1);
+//            stInparam.nPort = pDeviceInfo->nPort;
+//            stInparam.emSpecCap = EM_LOGIN_SPEC_CAP_TCP;
 
-            NET_OUT_LOGIN_WITH_HIGHLEVEL_SECURITY stOutparam;
-            memset(&stOutparam, 0, sizeof(stOutparam));
-            stOutparam.dwSize = sizeof(stOutparam);
-            pDeviceInfo->lLoginHandle = CLIENT_LoginWithHighLevelSecurity(&stInparam, &stOutparam);
+//            NET_OUT_LOGIN_WITH_HIGHLEVEL_SECURITY stOutparam;
+//            memset(&stOutparam, 0, sizeof(stOutparam));
+//            stOutparam.dwSize = sizeof(stOutparam);
+//            pDeviceInfo->lLoginHandle = CLIENT_LoginWithHighLevelSecurity(&stInparam, &stOutparam);
 
-            ConvertLoginError2String(stOutparam.nError , pDeviceInfo->strErrorCode);
+            NET_DEVICEINFO_Ex stDevInfoEx = {0};
+            int nError = 0;
+
+            pDeviceInfo->lLoginHandle = CLIENT_LoginEx2(pDeviceInfo->szDevIp,
+                                                        pDeviceInfo->nPort,
+                                                        pDeviceInfo->szUserName,
+                                                        pDeviceInfo->szPassWord,
+                                                        EM_LOGIN_SPEC_CAP_TCP,
+                                                        NULL,
+                                                        &stDevInfoEx,
+                                                        &nError
+                                                        );
+
+            ConvertLoginError2String(nError , pDeviceInfo->strErrorCode);
             if (pDeviceInfo->lLoginHandle == 0)
             {
-                if(stOutparam.nError != 255)
+                if(nError != 255)
                 {
-                  printf("Login failed! error = %d", stOutparam.nError);
+                  printf("Login failed! error = %d", nError);
                 }
                 else
                 {
-                    stOutparam.nError = CLIENT_GetLastError();
-                    if(stOutparam.nError ==NET_ERROR_MAC_VALIDATE_FAILED )
+                    nError = CLIENT_GetLastError();
+                    if(nError ==NET_ERROR_MAC_VALIDATE_FAILED )
                     {
                         printf("Login failed! bad mac address");
                     }
-                    else if(stOutparam.nError ==NET_ERROR_SENIOR_VALIDATE_FAILED)
+                    else if(nError ==NET_ERROR_SENIOR_VALIDATE_FAILED)
                     {
                         printf("Login failed! senior validate failed");
                     }
@@ -260,7 +278,8 @@ void * RoutineLoginThread(LPVOID lpPara)
                 }
                 else
                 {
-                    pDeviceInfo->nChannelCount = stOutparam.stuDeviceInfo.nChanNum;
+                    //pDeviceInfo->nChannelCount = stOutparam.stuDeviceInfo.nChanNum;
+                    printf("no stOutparam.stuDeviceInfo.nChanNum");
                 }
             }
 
