@@ -12,20 +12,20 @@ CONFIG  += c++17
 SOURCES += \
     main.cpp \
     mainwindow.cpp \
-    mainwindow_old.cpp \
     utility/Profile.cpp \
     utility/dhmutex.cpp
 
 HEADERS += \
     UserDefine.h \
+    libraries/dahua/avglobal.h \
+    libraries/dahua/dhconfigsdk.h \
+    libraries/dahua/dhnetsdk.h \
     mainwindow.hpp \
-    mainwindow_old.h \
     utility/Profile.h \
     utility/dhmutex.h
 
 FORMS += \
-    mainwindow.ui \
-    mainwindow_old.ui
+    mainwindow.ui
 
 TRANSLATIONS += \
     DahuaPlayback_hi_IN.ts
@@ -86,3 +86,14 @@ else:unix: LIBS += -L$$PWD/libraries/dahua/ -lStreamSvr
 
 INCLUDEPATH += $$PWD/libraries/dahua
 DEPENDPATH += $$PWD/libraries/dahua
+
+DISTFILES += \
+    config.ini \
+    libraries/dahua/libInfra.so \
+    libraries/dahua/libNetFramework.so \
+    libraries/dahua/libNetFramework_ssl.so \
+    libraries/dahua/libStream.so \
+    libraries/dahua/libStreamSvr.so \
+    libraries/dahua/libavnetsdk.so \
+    libraries/dahua/libdhconfigsdk.so \
+    libraries/dahua/libdhnetsdk.so

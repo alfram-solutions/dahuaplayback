@@ -31,7 +31,7 @@ public:
 public:
     int LoadConfig(int* nThreadNum);
     void Logindev(int nThreadNum);
-    QStandardItem* createListModel();
+    QStandardItemModel* createListModel();
     void addRowData(QAbstractItemModel* model, QStringList rowDataList);
 
 protected:
