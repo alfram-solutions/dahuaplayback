@@ -4,7 +4,7 @@
 #include <QFileDialog>
 
 #include <iostream>
-#include <ostream>
+#include <fstream>
 
 using namespace std;
 
@@ -117,8 +117,11 @@ void CALLBACK RealDataCallBackEx(LLONG lRealHandle, DWORD dwDataType, BYTE *pBuf
 
     pChannelInfo->dwStatistic = dwBufSize;
 
-//    FILE* outfile = fopen("data.avi", "wb");
-//    fwrite(pBuffer, 1, dwBufSize, outfile);
+    ofstream file ("video.avi", ios::app);
+    file.write((const char*)pBuffer, dwBufSize);
+
+
+
 }
 
 void CALLBACK DisConnectFunc(LLONG lLoginID, char *pchDVRIP, LONG nDVRPort, LDWORD dwUser)
