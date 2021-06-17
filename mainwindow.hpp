@@ -32,15 +32,16 @@ public:
     ~MainWindow();
 
 public:
+    libvlc_instance_t* instance;
+    libvlc_media_player_t* mp;
+    libvlc_media_t *m;
+
+public:
     int LoadConfig(int* nThreadNum);
     void Logindev(int nThreadNum);
     QStandardItemModel* createListModel();
     void addRowData(QAbstractItemModel* model, QStringList rowDataList);
 
-public:
-    libvlc_instance_t* inst;
-    libvlc_media_player_t* mp;
-    libvlc_media_t* m;
 
 protected:
     bool InitData();

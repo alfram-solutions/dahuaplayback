@@ -4,7 +4,19 @@
 #include <QFileDialog>
 
 #include <iostream>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <unistd.h>
+#include <stdio.h>
+
 #include <fstream>
+#include <istream>
+#include <iostream>
+
+#include <cstdio>
+#include <cstdlib>
+
 
 using namespace std;
 
@@ -18,6 +30,13 @@ DEVICE_LIST 	g_DeviceList;
 
 DHMutex        	g_csDevice;
 bool	        g_bExit = false;
+
+BYTE* pVideo;
+DWORD videoBufSize;
+
+// temp file to write video data to
+const char* video_filename = "/run/user/1000/dahua_video.avi";
+
 
 
 void ConvertLoginError2String(int nErrorCode , QString &strErrorCode)
@@ -117,9 +136,11 @@ void CALLBACK RealDataCallBackEx(LLONG lRealHandle, DWORD dwDataType, BYTE *pBuf
 
     pChannelInfo->dwStatistic = dwBufSize;
 
-    ofstream file ("video.avi", ios::app);
-    file.write((const char*)pBuffer, dwBufSize);
+    std::ofstream file(video_filename, std::ofstream::app);
+    file.write((char*) pBuffer, dwBufSize);
 
+    pVideo = pBuffer;
+    videoBufSize = dwBufSize;
 
 
 }
@@ -371,11 +392,6 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    // load the vlc engine
-    inst = libvlc_new(0, NULL);
-    mp = nullptr;
-    m = nullptr;
-
     standardItemModel = createListModel();
     ui->listView1->setModel(standardItemModel);
 
@@ -390,6 +406,16 @@ MainWindow::MainWindow(QWidget *parent) :
 
     // ���ݳ�ʼ��
     InitData();
+
+    // delete video buffer file if it exists in /run/user/1000/dahua_video.avi
+    if (remove(video_filename) != 0)
+        std::cerr << "error deleting video file" << std::endl;
+    else
+        std::cout << "deleted temp video file" << std::endl;
+
+    // vlc setup
+    instance = libvlc_new(0, NULL);
+
 
 }
 
@@ -646,38 +672,43 @@ void MainWindow::on_pushButLoad_clicked()
 
 void MainWindow::on_pushButPlay_clicked()
 {
-    QModelIndex  curIndex = ui->listView1->currentIndex ();
-    int nRow = curIndex.row ();
-    QModelIndex rowNOIndex = standardItemModel->index (nRow, 0);
-    QString strItemData = standardItemModel->data (rowNOIndex).toString ();
-    bool numok = false;
-    int nItem =  strItemData.toLong(&numok);
-    if(numok)
-    {
-        g_csDevice.Lock();
-        DEVICE_LIST::iterator it;
-        for(it = g_DeviceList.begin(); it != g_DeviceList.end(); it++)
-        {
-            DH_Device_Info* pDeviceInfo = *it;
-            if(pDeviceInfo->nIndex == nItem && pDeviceInfo->lLoginHandle != 0 && pDeviceInfo->bOnline)
-            {
-                int nLoopCount = pDeviceInfo->nChannelCount>16?16:pDeviceInfo->nChannelCount;
-                for(int i = 0; i < nLoopCount; i++)
-                {
-                    if(pDeviceInfo->channel[i].lRealPlayHandle == 0)
-                    {
-                        pDeviceInfo->channel[i].lRealPlayHandle = CLIENT_RealPlay(pDeviceInfo->lLoginHandle,i, NULL);
-                        if (pDeviceInfo->channel[i].lRealPlayHandle != 0)
-                        {
-                            CLIENT_SetRealDataCallBackEx2(pDeviceInfo->channel[i].lRealPlayHandle, RealDataCallBackEx, (LDWORD)&(pDeviceInfo->channel[i]), 0x0f);
-                            pDeviceInfo->nTimeCount = 0;
-                         }
-                     }
-                 }
-             }
-        }
-        g_csDevice.UnLock();
-    }
+//    QModelIndex  curIndex = ui->listView1->currentIndex ();
+//    int nRow = curIndex.row ();
+//    QModelIndex rowNOIndex = standardItemModel->index (nRow, 0);
+//    QString strItemData = standardItemModel->data (rowNOIndex).toString ();
+//    bool numok = false;
+//    int nItem =  strItemData.toLong(&numok);
+//    if(numok)
+//    {
+//        g_csDevice.Lock();
+//        DEVICE_LIST::iterator it;
+//        for(it = g_DeviceList.begin(); it != g_DeviceList.end(); it++)
+//        {
+//            DH_Device_Info* pDeviceInfo = *it;
+//            if(pDeviceInfo->nIndex == nItem && pDeviceInfo->lLoginHandle != 0 && pDeviceInfo->bOnline)
+//            {
+//                int nLoopCount = pDeviceInfo->nChannelCount>16?16:pDeviceInfo->nChannelCount;
+//                for(int i = 0; i < nLoopCount; i++)
+//                {
+//                    if(pDeviceInfo->channel[i].lRealPlayHandle == 0)
+//                    {
+//                        pDeviceInfo->channel[i].lRealPlayHandle = CLIENT_RealPlay(pDeviceInfo->lLoginHandle,i, NULL);
+//                        if (pDeviceInfo->channel[i].lRealPlayHandle != 0)
+//                        {
+//                            CLIENT_SetRealDataCallBackEx2(pDeviceInfo->channel[i].lRealPlayHandle, RealDataCallBackEx, (LDWORD)&(pDeviceInfo->channel[i]), 0x0f);
+//                            pDeviceInfo->nTimeCount = 0;
+//                         }
+//                     }
+//                 }
+//             }
+//        }
+//        g_csDevice.UnLock();
+//    }
+
+    m = libvlc_media_new_path(instance, video_filename);
+    mp = libvlc_media_player_new_from_media(m);
+    libvlc_media_release(m);
+    libvlc_media_player_play(mp);
 }
 
 
